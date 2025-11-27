@@ -40,7 +40,7 @@ const login = (req,res)=>{
 
         if(user){
             const token = jwt.sign({email: user.email, role: user.role}, secret_token,{expiresIn: '1h'});
-            res.cookie('token', token, { httpOnly: true, maxAge: 3600000 }); // 1 hour
+            res.cookie('token', token, { maxAge: 3600000 }); // 1 hour
             return res.status(200).json({user, token, message:"logged in successfully"})
         }else{
              return res.status(404).json({message:"user not present"});
@@ -53,7 +53,11 @@ const login = (req,res)=>{
 }
 
 const allUsers = (req,res)=>{
-    const token =  req.cookies.token;
+    const token =  req.headers.authorization?.split(" ")[1];
+    console.log(token);
+    // console.log(req.cookie.token);
+    
+    
     if(!token){
         return res.status(401).json({message:"unauthorized"});
     }
@@ -65,7 +69,7 @@ const allUsers = (req,res)=>{
             return res.status(403).json({message:"forbidden access"});
         }
     }catch(err){
-        return res.status(401).json({message:"invalid token"});
+        return res.status(400).json({message:"invalid token"});
     }
     
 }
