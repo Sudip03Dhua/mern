@@ -1,7 +1,7 @@
 var jwt = require('jsonwebtoken');
 const secret_token="kqsd"
-const users = [
-    {
+let users = [
+    {   
         name:"sudip",
         email:"sudip@gmail.com",
         age:22,
@@ -54,16 +54,12 @@ const login = (req,res)=>{
 
 const allUsers = (req,res)=>{
     const token =  req.headers.authorization?.split(" ")[1];
-    console.log(token);
-    // console.log(req.cookie.token);
-    
-    
+    // console.log(token);
     if(!token){
         return res.status(401).json({message:"unauthorized"});
     }
     try{
-        const decoded = jwt.verify(token,secret_token);
-        if(decoded.role=="admin"){
+        if(req.role=="admin"){
         return res.status(200).json({users})
         }else{
             return res.status(403).json({message:"forbidden access"});
@@ -74,5 +70,45 @@ const allUsers = (req,res)=>{
     
 }
 
+const deleteUser = (req,res)=>{
+    try {
+       
+        const email= req.body.email;
+        
+        if(req.role!="admin"){
+            return res.status(403).json({message:"forbidden access"});
+        }
 
-module.exports={signUp,login,allUsers}
+        if(email){  
+             users = users.filter(e=>{
+                return e.email!==email;
+            })
+             console.log(req.body.email);
+            return res.status(200).json({message:"user deleted successfully",users});
+        }else{
+            return res.status(500).json({message:"server error"});
+        }
+    } catch (error) {
+        return res.status(500).json({message:"server error"});
+    }
+}
+
+const updateUser = (req,res)=>{
+    try {
+        if(!req.body){
+            return res.status(400).json({message:"no data to update"});
+        }
+        
+        const findIndex = users.findIndex(e=>e.email===req.body.email);
+        if(findIndex<0){
+            return res.status(404).json({message:"user not found"});
+        }
+        users[findIndex]={...users[findIndex],...req.body};
+        return res.status(200).json({message:"user updated successfully",users});
+
+    } catch (error) {
+        return res.status(500).json({message:"server error"});
+    }
+}
+
+module.exports={signUp,login,allUsers,deleteUser,updateUser}
