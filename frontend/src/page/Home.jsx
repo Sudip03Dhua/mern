@@ -1,12 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import MyContetxt from "../context/Mycontext";
 
 const Home = () => {
+    const {token} = useContext(MyContetxt)
     const [data, setData] = useState([{}]);
     const getAllUsers  = async () => {
         try {
             const response = await axios.get("https://congenial-carnival-wrr4gx7667gwfp6-3000.app.github.dev/reg/allUsers",
-                {headers:{Authorization:`Bearer ${localStorage.getItem("token")}`}}
+                {headers:{Authorization:`Bearer ${token}`}}
         );
             if(response){
                 console.log(response.data);
@@ -25,7 +27,7 @@ const Home = () => {
             console.log(email);
             
             const data =  await axios.delete("https://congenial-carnival-wrr4gx7667gwfp6-3000.app.github.dev/reg/delete",
-                {headers:{Authorization:`Bearer ${localStorage.getItem("token")}`},
+                {headers:{Authorization:`Bearer ${token}`},
                 data:{email}
                  
             }
@@ -42,7 +44,7 @@ const Home = () => {
     const handleUpdate = (email)=>{
        try {
         const response = axios.put("https://congenial-carnival-wrr4gx7667gwfp6-3000.app.github.dev/reg/update",{email,name:"KQSD"},
-            {headers:{Authorization:`Bearer ${localStorage.getItem("token")}`}})
+            {headers:{Authorization:`Bearer ${token}`}})
             if(response){
                 // console.log("user updated");
                 setIsUpdate(true);
@@ -72,6 +74,7 @@ const Home = () => {
                     <h3>{user.age}</h3>
                     <h4>{user.mob}</h4>
                     <h4>{user.role}</h4>
+                    <h4>{user.password}</h4>
                     {user.role!=="admin"&&<button onClick={()=>handleDelete(user.email)}>delete</button>}
                     <button onClick={()=>handleUpdate(user.email)}>edit</button>
                 </div>

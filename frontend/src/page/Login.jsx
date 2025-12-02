@@ -1,9 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import MyContetxt from "../context/Mycontext";
 
 
 const Login = () => {
+  const {setToken} = useContext(MyContetxt)
     const [email, setEmail] = useState(''); 
     const [password, setPassword] = useState(''); 
     const [user, setUser] = useState(null); 
@@ -15,6 +17,7 @@ const Login = () => {
             if(response){
                 console.log("User logged in successfully", response.data.user);
                 localStorage.setItem("token", response.data.token);
+                setToken(response.data.token);
                 setUser(response.data.user);
                 navigate("/home"); // Redirect to home or dashboard after login
                 

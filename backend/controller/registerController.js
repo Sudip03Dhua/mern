@@ -1,18 +1,19 @@
 var jwt = require('jsonwebtoken');
 const secret_token="kqsd"
+const bcrypt = require('bcrypt');
 let users = [
     {   
         name:"sudip",
         email:"sudip@gmail.com",
         age:22,
-        password:"naruto",
+        password: bcrypt.hashSync("naruto", bcrypt.genSaltSync(10)),
         mob:9641506413,
         role:"admin"
     },
 ]
 
 
-const signUp = (req,res)=>{
+const signUp = async (req,res)=>{
     const {name,email,age,password,mob}=req.body;
     if(name && email && age && password && mob){
         const isEmailPresent = users.find(e=>{
@@ -20,7 +21,9 @@ const signUp = (req,res)=>{
         })
         if(!isEmailPresent){
             const role=req.body.role || "user";
-            users.push({name,email,age,password,mob,role});
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password,salt);
+            users.push({name,email,age,password: hashedPassword,mob,role});
             return res.status(201).json({message:"user registered succesfully"});
         }else{
             return res.status(409).json({message:"user already present"});
@@ -35,7 +38,7 @@ const login = (req,res)=>{
    const {email,password}= req.body;
     if(email && password){
         const user = users.find(e=>{
-            return e.email===email && e.password===password;
+            return e.email===email && bcrypt.compareSync(password, e.password);
         })
 
         if(user){
