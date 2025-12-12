@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 const secret_token="kqsd"
 const bcrypt = require('bcrypt');
+const path = require("path");
 let users = [
     {   
         name:"sudip",
@@ -114,4 +115,24 @@ const updateUser = (req,res)=>{
     }
 }
 
-module.exports={signUp,login,allUsers,deleteUser,updateUser}
+const uploadFile=(req,res)=>{
+    try {
+        if(!req.file){
+            return res.status(400).json({message:"no file uploaded"});
+        }
+        return res.status(200).json({message:"file uploaded successfully",filePath:req.file.path});
+    } catch (error) {
+        return res.status(500).json({message:"server error"});
+    }
+}
+
+const downloadFile=(req,res)=>{
+    try {
+        const filename = req.params.filename;
+        const filePath = path.join(__dirname,"../uploads",filename);
+        res.download(filePath);
+    }catch (error) {
+        return res.status(500).json({message:"server error"});
+    }
+}
+module.exports={signUp,login,allUsers,deleteUser,updateUser,uploadFile,downloadFile}

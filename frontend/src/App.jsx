@@ -7,6 +7,7 @@ import Signup from './page/Signup.jsx';
 import './App.css'
 import Home from './page/Home.jsx';
 import MyContetxt from './context/Mycontext.jsx';
+import FileUpload from './page/FileUpload.jsx';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home />} />
+          <Route path='/fileupload' element={<FileUpload/>}/>
         </Routes>
       </div>
     </BrowserRouter>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import MyContetxt from "../context/Mycontext";
+import { Link } from "react-router-dom";
 
 const Home = () => {
     const {token} = useContext(MyContetxt)
@@ -80,6 +81,7 @@ const Home = () => {
                 </div>
             )
         })}
+        <div><Link to="/fileupload">FileUpload</Link></div>
     </div>
   )
 }
